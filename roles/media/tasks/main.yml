@@ -1,0 +1,52 @@
+#
+# Install media packages and Intel specific libraries
+#
+- name: Install DNF packages from list
+  become: yes
+  tasks:
+    - name: Install packages
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - ffmpeg
+        - ffmpeg-libs
+        - gstreamer-ffmpeg
+        - libva
+        - libva-utils
+        - vlc
+    - name: Update package cache
+      dnf:
+        update_cache: yes
+
+- name: Install GStreamer, Lame and related packages. Exclude devel packages
+  become: yes
+  tasks:
+    - name: Install GStreamer and related packages
+      dnf:
+        name: "gstreamer1-plugins-{bad-*,good-*,base} gstreamer1-plugin-openh264 gstreamer1-libav"
+        exclude: "gstreamer1-plugins-bad-free-devel"
+        state: present
+        update_cache: yes
+
+    - name: Install lame* package
+      dnf:
+        name: "lame*"
+        exclude: "lame-devel"
+        state: present
+        update_cache: yes
+
+#
+# With newer Intel chipsets we want to swap the libva media driver for the intel media driver
+# TODO: find reference to docs on this
+#
+- name: Swap DNF packages
+  become: yes
+  tasks:
+    - name: Execute dnf swap command
+      dnf:
+        name: libva-intel-media-driver
+        newname: intel-media-driver
+        state: present
+        allow_erasing: yes
+
