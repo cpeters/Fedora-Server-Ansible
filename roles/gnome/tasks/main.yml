@@ -9,9 +9,34 @@
         name: "{{ item }}"
         state: present
       loop:
+        - dnf-plugins-core
         - gnome-extensions-app
         - gnome-tweaks
         - flatseal
+
+    # https://github.com/silenc3r/fedora-better-fonts
+    #
+    # Better fonts for Fedora
+    # fontconfig-font-replacements provides free substitutions for popular proprietary fonts from Microsoft and Apple operating systems.
+    #
+    # It makes your web browsing more aesthetically pleasing - you won't be seeing DejaVu Sans font on every damn webpage.
+    #
+    # Subpixel (rgb) antialiasing
+    # Default for Fedora are slight hinting and grayscale antialiasing.
+    # Some people find subpixel antialiasing to look better - others can't stand color fringing caused by it.
+    # If you want to try it for yourself install fontconfig-enhanced-defaults package.
+    # You can also enable it manually in Gnome Tweaks or by running following command in terminal:
+    - name: Add Copr repository and install better fonts
+      command: dnf copr enable -y chriscowleyunix/better_fonts
+
+    - name: Install packages
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - fontconfig-font-replacements
+        # - fontconfig-enhanced-defaults
+
     - name: Update package cache
       dnf:
         update_cache: yes
