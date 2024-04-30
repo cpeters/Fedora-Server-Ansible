@@ -20,11 +20,12 @@
         state: present
         update_cache: yes
 
-- name: Install Flatpak apps
-  become: yes
+- name: Install Flatpak apps for user
   tasks:
     - name: Install Flatpak apps
-      command: flatpak install -y flathub {{ item }}
-      loop:
-        - io.podman_desktop.PodmanDesktop
+      community.general.flatpak:
+        name:
+          - io.podman_desktop.PodmanDesktop
+        method: user
+        state: present
 
