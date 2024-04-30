@@ -31,3 +31,23 @@
       dnf:
         update_cache: yes
 
+- name: Use Stow for dotfiles
+  become: yes
+  tasks:
+    - name: Clone dotfiles repository
+      git:
+        repo: "https://github.com/cpeters/dotfiles.git"
+        dest: "/home/chris/.dotfiles"
+        clone: yes
+
+    # TODO fix structure of stow repo and update these
+    - name: Use stow to manage dotfiles
+      command: stow -t ~/ {{ item }}
+      args:
+        chdir: "/home/chris/.dotfiles"
+      with_items:
+        # - bash
+        # - alacritty
+        - git
+        - tmux
+
