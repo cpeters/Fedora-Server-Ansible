@@ -9,21 +9,21 @@
         name: "{{ item }}"
         state: present
       loop:
-        - bash-completion
-        - bash-color-prompt
-        - tmux
-        - gcc
-        - make
-        - git
-        - ripgrep
-        - fd-find
-        - unzip
-        - neovim
-        - fzf
-        - zoxide
-        - exa
         - alacritty
+        - bash-color-prompt
+        - bash-completion
+        - exa
+        - fd-find
+        - fzf
+        - gcc
+        - git
+        - make
+        - neovim
+        - ripgrep
         - strace
+        - tmux
+        - unzip
+        - zoxide
 
     - name: Update package cache
       dnf:
