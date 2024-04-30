@@ -18,11 +18,11 @@
   vars:
     extensions_dir: "~/.local/share/gnome-shell/extensions"
     extensions:
-      - name: "Vitals"
+      - name: "Vitals@CoreCoding.com"
         repo: "https://github.com/corecoding/Vitals.git"
-      - name: "Dash to Dock"
+      - name: "dash-to-dock@micxgx.gmail.com"
         repo: "https://github.com/micheleg/dash-to-dock.git"
-      - name: "Blur My Shell"
+      - name: "blue-my-shell@aunetx"
         repo: "https://github.com/aunetx/blur-my-shell.git"
   tasks:
     - name: Ensure git is installed
