@@ -1,0 +1,42 @@
+#
+# Setup environment for containers
+#
+- name: Add Copr repository for Incus
+  command: dnf copr enable -y ganto/lxc4
+
+- name: Install DNF packages and update cache
+  become: yes
+  tasks:
+    - name: Install packages
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - cockpit-podman
+        - incus
+        - podman
+        - podman-compose
+        - podman-docker
+        - podman-plugins
+        - podman-remote
+
+    - name: Update package cache
+      dnf:
+        update_cache: yes
+
+- name: Install Flatpak apps
+  become: yes
+  tasks:
+    - name: Install flatpak
+      dnf:
+        name: flatpak
+        state: present
+
+    - name: Add Flathub remote
+      command: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+    - name: Install Flatpak apps
+      command: flatpak install -y flathub {{ item }}
+      loop:
+        - io.podman_desktop.PodmanDesktop
+
