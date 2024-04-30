@@ -78,6 +78,7 @@
         name: "{{ item }}"
         state: present
       loop:
+        - glances
         - lm_sensors
         - smartmontools
         - smartmontools-selinux
