@@ -13,6 +13,31 @@
         - gnome-tweaks
         - flatseal
 
+- name: Install individual GNOME extensions
+  become: yes
+  vars:
+    extensions_dir: "~/.local/share/gnome-shell/extensions"
+    extensions:
+      - name: "Vitals"
+        repo: "https://github.com/corecoding/Vitals.git"
+      - name: "Dash to Dock"
+        repo: "https://github.com/micheleg/dash-to-dock.git"
+      - name: "Blur My Shell"
+        repo: "https://github.com/aunetx/blur-my-shell.git"
+  tasks:
+    - name: Ensure git is installed
+      dnf:
+        name: git
+        state: present
+
+    - name: Clone and install extensions
+      git:
+        repo: "{{ item.repo }}"
+        dest: "{{ extensions_dir }}/{{ item.name }}"
+        update: yes
+        force: yes
+      with_items: "{{ extensions }}"
+
 #
 # Default setting for Gnome groups all windows by app together when using Alt-Tab
 # Modify this behavior to display all open windows on a active workspace when using Alt-Tab
