@@ -1,0 +1,32 @@
+#
+# Install Gnome packages and tweak default behavior
+#
+- name: Install DNF packages from list
+  become: yes
+  tasks:
+    - name: Install packages
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - gnome-extensions-app
+        - gnome-tweaks
+        - flatseal
+
+#
+# Default setting for Gnome groups all windows by app together when using Alt-Tab
+# Modify this behavior to display all open windows on a active workspace when using Alt-Tab
+# Default setting for Option-Tab will remain unmodified and allow switching by app group across all workspace
+#
+# Alt-Tab - individual windows on active workspace
+# Option-Tab - grouped by application across all workspaces
+#
+- name: Edit GNOME default switching behavior
+  become: yes
+  tasks:
+    - name: Set switch-windows keybinding
+      command: gsettings set org.gnome.desktop.wm.keybindings switch-windows "['<Alt>Tab']"
+
+    - name: Set switch-windows-backward keybinding
+      command: gsettings set org.gnome.desktop.wm.keybindings switch-windows-backward "['<Alt><Shift>Tab']"
+
