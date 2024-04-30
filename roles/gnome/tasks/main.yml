@@ -12,6 +12,9 @@
         - gnome-extensions-app
         - gnome-tweaks
         - flatseal
+    - name: Update package cache
+      dnf:
+        update_cache: yes
 
 - name: Install individual GNOME extensions
   become: yes
