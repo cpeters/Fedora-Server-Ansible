@@ -3,29 +3,27 @@
 # Setup environment for containers
 #
 - name: Add Copr repository for Incus
-  command: dnf copr enable -y ganto/lxc4
+  community.general.copr:
+    host: copr.fedorainfracloud.org
+    state: enabled
+    name: ganto/lxc4
 
-- name: Install DNF packages and update cache
-  become: true
-  tasks:
-    - name: Install packages
-      dnf:
-        name:
-          - cockpit-podman
-          - incus
-          - podman
-          - podman-compose
-          - podman-docker
-          - podman-plugins
-          - podman-remote
-        state: present
-        update_cache: true
+- name: Install packages
+  dnf:
+    name:
+      - cockpit-podman
+      - incus
+      - podman
+      - podman-compose
+      - podman-docker
+      - podman-plugins
+      - podman-remote
+    state: present
+    update_cache: true
 
-- name: Install Flatpak apps for user
-  tasks:
-    - name: Install Flatpak apps
-      community.general.flatpak:
-        name:
-          - io.podman_desktop.PodmanDesktop
-        method: user
-        state: present
+- name: Install Flatpak apps
+  community.general.flatpak:
+    name:
+      - io.podman_desktop.PodmanDesktop
+    method: user
+    state: present

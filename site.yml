@@ -1,5 +1,7 @@
 ---
 - name: Fedora Server Provisioner
+  gather_facts: false
+  hosts: localhost
 
   roles:
-    - system
+  - system

@@ -2,35 +2,35 @@
 # Install Gnome packages and tweak default behavior
 #
 ---
-- name: Install DNF packages from list
-  become: true
-  tasks:
-    # https://github.com/silenc3r/fedora-better-fonts
-    #
-    # Better fonts for Fedora
-    # fontconfig-font-replacements provides free substitutions for popular proprietary fonts from Microsoft and Apple operating systems.
-    #
-    # It makes your web browsing more aesthetically pleasing - you won't be seeing DejaVu Sans font on every damn webpage.
-    #
-    # Subpixel (rgb) antialiasing
-    # Default for Fedora are slight hinting and grayscale antialiasing.
-    # Some people find subpixel antialiasing to look better - others can't stand color fringing caused by it.
-    # If you want to try it for yourself install fontconfig-enhanced-defaults package.
-    # You can also enable it manually in Gnome Tweaks or by running following command in terminal:
-    - name: Add Copr repository and install better fonts
-      command: dnf copr enable -y chriscowleyunix/better_fonts
+# https://github.com/silenc3r/fedora-better-fonts
+#
+# Better fonts for Fedora
+# fontconfig-font-replacements provides free substitutions for popular proprietary fonts from Microsoft and Apple operating systems.
+#
+# It makes your web browsing more aesthetically pleasing - you won't be seeing DejaVu Sans font on every damn webpage.
+#
+# Subpixel (rgb) antialiasing
+# Default for Fedora are slight hinting and grayscale antialiasing.
+# Some people find subpixel antialiasing to look better - others can't stand color fringing caused by it.
+# If you want to try it for yourself install fontconfig-enhanced-defaults package.
+# You can also enable it manually in Gnome Tweaks or by running following command in terminal:
+- name: Add Copr repository for better fonts
+  community.general.copr:
+    host: copr.fedorainfracloud.org
+    state: enabled
+    name: chriscowleyunix/better_fonts
 
-    - name: Install packages
-      dnf:
-        name:
-          - dnf-plugins-core
-          - flatseal
-          - fontconfig-font-replacements
-          # - fontconfig-enhanced-defaults
-          - gnome-extensions-app
-          - gnome-tweaks
-        state: present
-        update_cache: true
+- name: Install packages
+  dnf:
+    name:
+      - dnf-plugins-core
+      - flatseal
+      - fontconfig-font-replacements
+    # - fontconfig-enhanced-defaults
+      - gnome-extensions-app
+      - gnome-tweaks
+    state: present
+    update_cache: true
 
 # - name: Install individual GNOME extensions
 #   vars:
@@ -64,11 +64,8 @@
 # Alt-Tab - individual windows on active workspace
 # Option-Tab - grouped by application across all workspaces
 #
-- name: Edit GNOME default switching behavior
-  become: true
-  tasks:
-    - name: Set switch-windows keybinding
-      command: gsettings set org.gnome.desktop.wm.keybindings switch-windows "['<Alt>Tab']"
+- name: Set switch-windows keybinding
+  command: gsettings set org.gnome.desktop.wm.keybindings switch-windows "['<Alt>Tab']"
 
-    - name: Set switch-windows-backward keybinding
-      command: gsettings set org.gnome.desktop.wm.keybindings switch-windows-backward "['<Alt><Shift>Tab']"
+- name: Set switch-windows-backward keybinding
+  command: gsettings set org.gnome.desktop.wm.keybindings switch-windows-backward "['<Alt><Shift>Tab']"

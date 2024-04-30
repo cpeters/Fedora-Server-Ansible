@@ -1,49 +1,42 @@
 #
 # Install developer packages
 #
-- name: Install DNF packages and update cache
-  become: true
-  tasks:
-    - name: Install packages
-      dnf:
-        name:
-          - alacritty
-          - bash-color-prompt
-          - bash-completion
-          - exa
-          - fd-find
-          - fzf
-          - gcc
-          - git
-          - make
-          - neovim
-          - ripgrep
-          - stow
-          - strace
-          - tig
-          - tmux
-          - unzip
-          - zoxide
-        state: present
-        update_cache: true
+- name: Install packages
+  dnf:
+    name:
+      - alacritty
+      - bash-color-prompt
+      - bash-completion
+      - exa
+      - fd-find
+      - fzf
+      - gcc
+      - git
+      - make
+      - neovim
+      - ripgrep
+      - stow
+      - strace
+      - tig
+      - tmux
+      - unzip
+      - zoxide
+    state: present
+    update_cache: true
 
-- name: Use Stow for dotfiles
-  become: true
-  tasks:
-    - name: Clone dotfiles repository
-      git:
-        repo: "https://github.com/cpeters/dotfiles.git"
-        dest: "/home/chris/.dotfiles"
-        clone: true
+- name: Clone dotfiles repository
+  git:
+    repo: "https://github.com/cpeters/dotfiles.git"
+    dest: "/home/chris/.dotfiles"
+    clone: true
 
-    # TODO fix structure of stow repo and update these
-    - name: Use stow to manage dotfiles
-      command: stow -t ~/ {{ item }}
-      args:
-        chdir: "/home/chris/.dotfiles"
-      with_items:
-        # - bash
-        # - alacritty
-        - git
-        - tmux
-
+# TODO fix structure of stow repo and update these
+- name: Use stow to manage dotfiles
+  command: stow -t ~/ {{ item }}
+  args:
+    chdir: "/home/chris/.dotfiles"
+  with_items:
+  # - bash
+  # - alacritty
+    - git
+    - tmux

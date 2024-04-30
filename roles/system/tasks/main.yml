@@ -1,105 +1,90 @@
 ---
 - name: Set hostname
-  become: true
-  tasks:
-    - name: Set hostname to fedora
-      ansible.builtin.hostname:
-        name: fedora
-        use: fedora
+  ansible.builtin.hostname:
+    name: fedora
+    use: fedora
 
-- name: Configure DNF
-  become: true
-  tasks:
-    - name: Backup original DNF configuration
-      command: cp /etc/dnf/dnf.conf /etc/dnf/dnf.conf.backup
-      ignore_errors: true
+# - name: Configure DNF
+#   tasks:
+#     - command: cp /etc/dnf/dnf.conf /etc/dnf/dnf.conf.backup
+#       ignore_errors: true
+#
+#     - lineinfile:
+#         path: /etc/dnf/dnf.conf
+#         line: "{{ item }}"
+#         state: present
+#       with_items:
+#         - 'fastestmirror=True'
+#         - 'max_parallel_downloads=10'
+#         - 'deltarpm=True'
 
-    - name: Use fastest mirrors
-      lineinfile:
-        path: /etc/dnf/dnf.conf
-        line: "{{ item }}"
-        state: present
-      with_items:
-        - 'fastestmirror=True'
-        - 'max_parallel_downloads=10'
-        - 'deltarpm=True'
+- name: Add RPM Fusion Free repository
+  dnf_repository:
+   name: rpmfusion-free
+   description: RPM Fusion Free for Fedora $releasever
+   baseurl: https://mirrors.rpmfusion.org/free/fedora/releases/$releasever/Everything/$basearch/os/
+   gpgkey: https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-free-fedora-$releasever
+   gpgcheck: true
+   enabled: true
 
-- name: Add RPM Fusion Repositories
-  become: true
-  tasks:
-    - name: Add RPM Fusion Free repository
-      dnf_repository:
-        name: rpmfusion-free
-        description: RPM Fusion Free for Fedora $releasever
-        baseurl: https://mirrors.rpmfusion.org/free/fedora/releases/$releasever/Everything/$basearch/os/
-        gpgkey: https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-free-fedora-$releasever
-        gpgcheck: true
-        enabled: true
+- name: Add RPM Fusion Nonfree repository
+  dnf_repository:
+    name: rpmfusion-nonfree
+    description: RPM Fusion Nonfree for Fedora $releasever
+    baseurl: https://mirrors.rpmfusion.org/nonfree/fedora/releases/$releasever/Everything/$basearch/os/
+    gpgkey: https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-nonfree-fedora-$releasever
+    gpgcheck: true
+    enabled: true
 
-    - name: Add RPM Fusion Nonfree repository
-      dnf_repository:
-        name: rpmfusion-nonfree
-        description: RPM Fusion Nonfree for Fedora $releasever
-        baseurl: https://mirrors.rpmfusion.org/nonfree/fedora/releases/$releasever/Everything/$basearch/os/
-        gpgkey: https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-nonfree-fedora-$releasever
-        gpgcheck: true
-        enabled: true
+- name: Update DNF and upgrade packages with refresh
+  dnf:
+    name: '*'
+    state: latest
+    update_cache: true
 
-- name: Update DNF and Upgrade Packages with Refresh
-  become: true
-  tasks:
-    - name: Update package cache and upgrade packages
-      dnf:
-        name: '*'
-        state: latest
-        update_cache: true
+- name: Install Fedora Workstation group
+  dnf:
+    groupname: 'Fedora Workstation'
+    state: present
+    update_cache: true
 
-- name: Add Flathub repository
-  become: true
-  tasks:
-    - name: Install flatpak
-      dnf:
-        name: flatpak
-        state: present
-        update_cache: true
+- name: Install flatpak
+  dnf:
+   name: flatpak
+   state: present
+   update_cache: true
 
-    - name: Add the flathub flatpak repository
-      community.general.flatpak_remote:
-        name: flathub
-        flatpakrepo_url: httsp://dl.flathub.org/repo/flathub.flatpakrepo
+- name: Add the flathub flatpak repository
+  community.general.flatpak_remote:
+    name: flathub
+    flatpakrepo_url: httsp://dl.flathub.org/repo/flathub.flatpakrepo
 
 - name: Update Firmware with fwupdmgr
-  become: true
-  tasks:
-    - name: Run fwupdmgr refresh
-      command: fwupdmgr refresh
+  command: fwupdmgr refresh --force && fwupdmgr get-updates && fwupdmgr update
 
-    - name: Run fwupdmgr refresh
-      command: fwupdmgr get-updates
+- name: Install system monitoring packages
+  dnf:
+    name:
+      - glances
+      - lm_sensors
+      - smartmontools
+      - smartmontools-selinux
+    state: present
+    update_cache: true
 
-    - name: Run fwupdmgr update
-      command: fwupdmgr update
+- name: Detect and load kernel modules
+  command: sensors-detect --auto
+  register: sensors_detect_output
+  changed_when: "'Some chips found' in sensors_detect_output.stdout"
 
-- name: Install packages and configure lm_sensors
-  become: true
-  tasks:
-    - name: Install packages
-      dnf:
-        name:
-          - glances
-          - lm_sensors
-          - smartmontools
-          - smartmontools-selinux
-        state: present
-        update_cache: true
+- name: Reload lm_sensors service
+  service:
+    name: lm_sensors
+    state: restarted
+  when: sensors_detect_output.changed
 
-    - name: Detect and load kernel modules
-      command: sensors-detect --auto
-      register: sensors_detect_output
-      changed_when: "'Some chips found' in sensors_detect_output.stdout"
-
-    - name: Reload lm_sensors service
-      service:
-        name: lm_sensors
-        state: restarted
-      when: sensors_detect_output.changed
+- name: Enable graphical target
+  systemd:
+    name: graphical.target
+    state: started
+    enabled: true

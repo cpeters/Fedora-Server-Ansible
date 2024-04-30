@@ -1,50 +1,41 @@
 #
 # Install media packages and Intel specific libraries
 #
-- name: Install DNF packages from list
-  become: true
-  tasks:
-    - name: Install packages
-      dnf:
-        name:
-          - ffmpeg
-          - ffmpeg-libs
-          - gstreamer-ffmpeg
-          - gstreamer1-libav
-          - gstreamer1-plugin-openh264
-          - gstreamer1-plugins-{base,bad-*,good-*}
-          - lame*
-          - libva
-          - libva-utils
-          - vlc
-        exclude:
-          - gstreamer1-plugins-bad-free-devel
-          - lame-devel
-        state: present
-        update_cache: true
+- name: Install packages
+  dnf:
+    name:
+      - ffmpeg
+      - ffmpeg-libs
+      - gstreamer-ffmpeg
+      - gstreamer1-libav
+      - gstreamer1-plugin-openh264
+      - gstreamer1-plugins-{base,bad-*,good-*}
+      - lame*
+      - libva
+      - libva-utils
+      - vlc
+    exclude:
+      - gstreamer1-plugins-bad-free-devel
+      - lame-devel
+    state: present
+    update_cache: true
 
 #
 # With newer Intel chipsets we want to swap the libva media driver for the intel media driver
 # TODO: find reference to docs on this
 #
-- name: Swap DNF packages
-  become: true
-  tasks:
-    - name: Execute dnf swap command
-      dnf:
-        name: libva-intel-media-driver
-        newname: intel-media-driver
-        state: present
-        allow_erasing: true
+- name: Swap DNF packages for Intel media driver
+  dnf:
+    name: libva-intel-media-driver
+    newname: intel-media-driver
+    state: present
+    allow_erasing: true
 
-- name: Install Flatpak apps for user
-  tasks:
-    - name: Install Flatpak apps
-      community.general.flatpak:
-        name:
-          - me.hyliu.fluentreader
-          - io.freetubeapp.FreeTube
-          - md.obsidian.Obsidian
-        method: user
-        state: present
-
+- name: Install Flatpak apps
+  community.general.flatpak:
+    name:
+      - me.hyliu.fluentreader
+      - io.freetubeapp.FreeTube
+      - md.obsidian.Obsidian
+    method: user
+    state: present
