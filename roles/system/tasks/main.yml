@@ -1,0 +1,73 @@
+# Main system configuration tasks
+- name: Configure DNF
+  become: yes
+  gather_facts: no
+  tasks:
+    - name: Backup original DNF configuration
+      command: cp /etc/dnf/dnf.conf /etc/dnf/dnf.conf.backup
+      ignore_errors: yes
+
+    - name: Use fastest mirrors
+      lineinfile:
+        path: /etc/dnf/dnf.conf
+        line: "{{ item }}"
+        state: present
+      with_items:
+        - 'fastestmirror=True'
+        - 'max_parallel_downloads=10'
+        - 'deltarpm=True'
+
+- name: Add RPM Fusion Repositories
+  become: yes
+  tasks:
+    - name: Add RPM Fusion Free repository
+      dnf_repository:
+        name: rpmfusion-free
+        description: RPM Fusion Free for Fedora $releasever
+        baseurl: https://mirrors.rpmfusion.org/free/fedora/releases/$releasever/Everything/$basearch/os/
+        gpgkey: https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-free-fedora-$releasever
+        gpgcheck: yes
+        enabled: yes
+
+    - name: Add RPM Fusion Nonfree repository
+      dnf_repository:
+        name: rpmfusion-nonfree
+        description: RPM Fusion Nonfree for Fedora $releasever
+        baseurl: https://mirrors.rpmfusion.org/nonfree/fedora/releases/$releasever/Everything/$basearch/os/
+        gpgkey: https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-nonfree-fedora-$releasever
+        gpgcheck: yes
+        enabled: yes
+
+- name: Update DNF and Upgrade Packages with Refresh
+  become: yes
+  tasks:
+    - name: Update package cache and upgrade packages
+      dnf:
+        name: '*'
+        state: latest
+        update_cache: yes
+
+- name: Add Flathub repository
+  become: yes
+  tasks:
+    - name: Install flatpak
+      dnf:
+        name: flatpak
+        state: present
+
+    - name: Add Flathub remote
+      command: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+
+- name: Update Firmware with fwupdmgr
+  become: yes
+  tasks:
+    - name: Run fwupdmgr refresh
+      command: fwupdmgr refresh
+
+    - name: Run fwupdmgr refresh
+      command: fwupdmgr get-updates
+
+    - name: Run fwupdmgr update
+      command: fwupdmgr update
+
