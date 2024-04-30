@@ -1,0 +1,31 @@
+#
+# Install developer packages
+#
+- name: Install DNF packages and update cache
+  become: yes
+  tasks:
+    - name: Install packages
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - bash-completion
+        - bash-color-prompt
+        - tmux
+        - gcc
+        - make
+        - git
+        - ripgrep
+        - fd-find
+        - unzip
+        - neovim
+        - fzf
+        - zoxide
+        - exa
+        - alacritty
+        - strace
+
+    - name: Update package cache
+      dnf:
+        update_cache: yes
+
