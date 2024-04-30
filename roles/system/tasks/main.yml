@@ -1,4 +1,9 @@
 # Main system configuration tasks
+- name: Set a hostname
+  ansible.builtin.hostname:
+    name: fedora
+    use: fedora
+
 - name: Configure DNF
   become: yes
   gather_facts: no
@@ -54,9 +59,12 @@
       dnf:
         name: flatpak
         state: present
+        update_cache: yes
 
-    - name: Add Flathub remote
-      command: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+    - name: Add the flathub flatpak repository
+      community.general.flatpak_remote:
+        name: flathub
+        flatpakrepo_url: httsp://dl.flathub.org/repo/flathub.flatpakrepo
 
 - name: Update Firmware with fwupdmgr
   become: yes
