@@ -37,13 +37,14 @@
         state: present
         allow_erasing: yes
 
-- name: Install Flatpak apps
-  become: yes
+- name: Install Flatpak apps for user
   tasks:
     - name: Install Flatpak apps
-      command: flatpak install -y flathub {{ item }}
-      loop:
-        - me.hyliu.fluentreader
-        - io.freetubeapp.FreeTube
-        - md.obsidian.Obsidian
+      community.general.flatpak:
+        name:
+          - me.hyliu.fluentreader
+          - io.freetubeapp.FreeTube
+          - md.obsidian.Obsidian
+        method: user
+        state: present
 
