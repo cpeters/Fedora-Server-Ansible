@@ -1,16 +1,18 @@
-# Main system configuration tasks
-- name: Set a hostname
-  ansible.builtin.hostname:
-    name: fedora
-    use: fedora
+---
+- name: Set hostname
+  become: true
+  tasks:
+    - name: Set hostname to fedora
+      ansible.builtin.hostname:
+        name: fedora
+        use: fedora
 
 - name: Configure DNF
-  become: yes
-  gather_facts: no
+  become: true
   tasks:
     - name: Backup original DNF configuration
       command: cp /etc/dnf/dnf.conf /etc/dnf/dnf.conf.backup
-      ignore_errors: yes
+      ignore_errors: true
 
     - name: Use fastest mirrors
       lineinfile:
@@ -23,7 +25,7 @@
         - 'deltarpm=True'
 
 - name: Add RPM Fusion Repositories
-  become: yes
+  become: true
   tasks:
     - name: Add RPM Fusion Free repository
       dnf_repository:
@@ -31,8 +33,8 @@
         description: RPM Fusion Free for Fedora $releasever
         baseurl: https://mirrors.rpmfusion.org/free/fedora/releases/$releasever/Everything/$basearch/os/
         gpgkey: https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-free-fedora-$releasever
-        gpgcheck: yes
-        enabled: yes
+        gpgcheck: true
+        enabled: true
 
     - name: Add RPM Fusion Nonfree repository
       dnf_repository:
@@ -40,26 +42,26 @@
         description: RPM Fusion Nonfree for Fedora $releasever
         baseurl: https://mirrors.rpmfusion.org/nonfree/fedora/releases/$releasever/Everything/$basearch/os/
         gpgkey: https://rpmfusion.org/keys?action=AttachFile&do=get&target=RPM-GPG-KEY-rpmfusion-nonfree-fedora-$releasever
-        gpgcheck: yes
-        enabled: yes
+        gpgcheck: true
+        enabled: true
 
 - name: Update DNF and Upgrade Packages with Refresh
-  become: yes
+  become: true
   tasks:
     - name: Update package cache and upgrade packages
       dnf:
         name: '*'
         state: latest
-        update_cache: yes
+        update_cache: true
 
 - name: Add Flathub repository
-  become: yes
+  become: true
   tasks:
     - name: Install flatpak
       dnf:
         name: flatpak
         state: present
-        update_cache: yes
+        update_cache: true
 
     - name: Add the flathub flatpak repository
       community.general.flatpak_remote:
@@ -67,7 +69,7 @@
         flatpakrepo_url: httsp://dl.flathub.org/repo/flathub.flatpakrepo
 
 - name: Update Firmware with fwupdmgr
-  become: yes
+  become: true
   tasks:
     - name: Run fwupdmgr refresh
       command: fwupdmgr refresh
@@ -79,7 +81,7 @@
       command: fwupdmgr update
 
 - name: Install packages and configure lm_sensors
-  become: yes
+  become: true
   tasks:
     - name: Install packages
       dnf:
@@ -89,7 +91,7 @@
           - smartmontools
           - smartmontools-selinux
         state: present
-        update_cache: yes
+        update_cache: true
 
     - name: Detect and load kernel modules
       command: sensors-detect --auto
@@ -101,4 +103,3 @@
         name: lm_sensors
         state: restarted
       when: sensors_detect_output.changed
-

@@ -1,8 +1,9 @@
 #
 # Install Gnome packages and tweak default behavior
 #
+---
 - name: Install DNF packages from list
-  become: yes
+  become: true
   tasks:
     # https://github.com/silenc3r/fedora-better-fonts
     #
@@ -29,32 +30,31 @@
           - gnome-extensions-app
           - gnome-tweaks
         state: present
-        update_cache: yes
+        update_cache: true
 
-- name: Install individual GNOME extensions
-  become: yes
-  vars:
-    extensions_dir: "~/.local/share/gnome-shell/extensions"
-    extensions:
-      - name: "Vitals@CoreCoding.com"
-        repo: "https://github.com/corecoding/Vitals.git"
-      - name: "dash-to-dock@micxgx.gmail.com"
-        repo: "https://github.com/micheleg/dash-to-dock.git"
-      - name: "blue-my-shell@aunetx"
-        repo: "https://github.com/aunetx/blur-my-shell.git"
-  tasks:
-    - name: Ensure git is installed
-      dnf:
-        name: git
-        state: present
-
-    - name: Clone and install extensions
-      git:
-        repo: "{{ item.repo }}"
-        dest: "{{ extensions_dir }}/{{ item.name }}"
-        update: yes
-        force: yes
-      with_items: "{{ extensions }}"
+# - name: Install individual GNOME extensions
+#   vars:
+#     extensions_dir: "~/.local/share/gnome-shell/extensions"
+#     extensions:
+#       - name: "Vitals@CoreCoding.com"
+#         repo: "https://github.com/corecoding/Vitals.git"
+#       - name: "dash-to-dock@micxgx.gmail.com"
+#         repo: "https://github.com/micheleg/dash-to-dock.git"
+#       - name: "blue-my-shell@aunetx"
+#         repo: "https://github.com/aunetx/blur-my-shell.git"
+#   tasks:
+#     - name: Ensure git is installed
+#       dnf:
+#         name: git
+#         state: present
+#
+#     - name: Clone and install extensions
+#       git:
+#         repo: "{{ item.repo }}"
+#         dest: "{{ extensions_dir }}/{{ item.name }}"
+#         update: true
+#         force: true
+#       with_items: "{{ extensions }}"
 
 #
 # Default setting for Gnome groups all windows by app together when using Alt-Tab
@@ -65,11 +65,10 @@
 # Option-Tab - grouped by application across all workspaces
 #
 - name: Edit GNOME default switching behavior
-  become: yes
+  become: true
   tasks:
     - name: Set switch-windows keybinding
       command: gsettings set org.gnome.desktop.wm.keybindings switch-windows "['<Alt>Tab']"
 
     - name: Set switch-windows-backward keybinding
       command: gsettings set org.gnome.desktop.wm.keybindings switch-windows-backward "['<Alt><Shift>Tab']"
-

@@ -2,7 +2,7 @@
 # Install developer packages
 #
 - name: Install DNF packages and update cache
-  become: yes
+  become: true
   tasks:
     - name: Install packages
       dnf:
@@ -25,16 +25,16 @@
           - unzip
           - zoxide
         state: present
-        update_cache: yes
+        update_cache: true
 
 - name: Use Stow for dotfiles
-  become: yes
+  become: true
   tasks:
     - name: Clone dotfiles repository
       git:
         repo: "https://github.com/cpeters/dotfiles.git"
         dest: "/home/chris/.dotfiles"
-        clone: yes
+        clone: true
 
     # TODO fix structure of stow repo and update these
     - name: Use stow to manage dotfiles

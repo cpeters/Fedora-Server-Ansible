@@ -1,2 +1,2 @@
 [local]
-federa ansible_ssh_host=localhost
+localhost ansible_connection=local

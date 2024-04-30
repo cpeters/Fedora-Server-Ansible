@@ -2,7 +2,7 @@
 # Install media packages and Intel specific libraries
 #
 - name: Install DNF packages from list
-  become: yes
+  become: true
   tasks:
     - name: Install packages
       dnf:
@@ -21,21 +21,21 @@
           - gstreamer1-plugins-bad-free-devel
           - lame-devel
         state: present
-        update_cache: yes
+        update_cache: true
 
 #
 # With newer Intel chipsets we want to swap the libva media driver for the intel media driver
 # TODO: find reference to docs on this
 #
 - name: Swap DNF packages
-  become: yes
+  become: true
   tasks:
     - name: Execute dnf swap command
       dnf:
         name: libva-intel-media-driver
         newname: intel-media-driver
         state: present
-        allow_erasing: yes
+        allow_erasing: true
 
 - name: Install Flatpak apps for user
   tasks:

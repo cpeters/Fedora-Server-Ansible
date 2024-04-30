@@ -1,3 +1,4 @@
+---
 #
 # Setup environment for containers
 #
@@ -5,7 +6,7 @@
   command: dnf copr enable -y ganto/lxc4
 
 - name: Install DNF packages and update cache
-  become: yes
+  become: true
   tasks:
     - name: Install packages
       dnf:
@@ -18,7 +19,7 @@
           - podman-plugins
           - podman-remote
         state: present
-        update_cache: yes
+        update_cache: true
 
 - name: Install Flatpak apps for user
   tasks:
@@ -28,4 +29,3 @@
           - io.podman_desktop.PodmanDesktop
         method: user
         state: present
-
