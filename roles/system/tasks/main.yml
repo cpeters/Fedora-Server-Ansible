@@ -58,7 +58,6 @@
     - name: Add Flathub remote
       command: flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
-
 - name: Update Firmware with fwupdmgr
   become: yes
   tasks:
@@ -70,4 +69,31 @@
 
     - name: Run fwupdmgr update
       command: fwupdmgr update
+
+- name: Install packages and configure lm_sensors
+  become: yes
+  tasks:
+    - name: Install packages
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - lm_sensors
+        - smartmontools
+        - smartmontools-selinux
+
+    - name: Update package cache
+      dnf:
+        update_cache: yes
+
+    - name: Detect and load kernel modules
+      command: sensors-detect --auto
+      register: sensors_detect_output
+      changed_when: "'Some chips found' in sensors_detect_output.stdout"
+
+    - name: Reload lm_sensors service
+      service:
+        name: lm_sensors
+        state: restarted
+      when: sensors_detect_output.changed
 
