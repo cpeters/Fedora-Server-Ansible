@@ -4,16 +4,6 @@
 - name: Install DNF packages from list
   become: yes
   tasks:
-    - name: Install packages
-      dnf:
-        name: "{{ item }}"
-        state: present
-      loop:
-        - dnf-plugins-core
-        - gnome-extensions-app
-        - gnome-tweaks
-        - flatseal
-
     # https://github.com/silenc3r/fedora-better-fonts
     #
     # Better fonts for Fedora
@@ -31,14 +21,14 @@
 
     - name: Install packages
       dnf:
-        name: "{{ item }}"
+        name:
+          - dnf-plugins-core
+          - flatseal
+          - fontconfig-font-replacements
+          # - fontconfig-enhanced-defaults
+          - gnome-extensions-app
+          - gnome-tweaks
         state: present
-      loop:
-        - fontconfig-font-replacements
-        # - fontconfig-enhanced-defaults
-
-    - name: Update package cache
-      dnf:
         update_cache: yes
 
 - name: Install individual GNOME extensions

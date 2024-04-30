@@ -75,16 +75,12 @@
   tasks:
     - name: Install packages
       dnf:
-        name: "{{ item }}"
+        name:
+          - glances
+          - lm_sensors
+          - smartmontools
+          - smartmontools-selinux
         state: present
-      loop:
-        - glances
-        - lm_sensors
-        - smartmontools
-        - smartmontools-selinux
-
-    - name: Update package cache
-      dnf:
         update_cache: yes
 
     - name: Detect and load kernel modules

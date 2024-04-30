@@ -9,19 +9,15 @@
   tasks:
     - name: Install packages
       dnf:
-        name: "{{ item }}"
+        name:
+          - cockpit-podman
+          - incus
+          - podman
+          - podman-compose
+          - podman-docker
+          - podman-plugins
+          - podman-remote
         state: present
-      loop:
-        - cockpit-podman
-        - incus
-        - podman
-        - podman-compose
-        - podman-docker
-        - podman-plugins
-        - podman-remote
-
-    - name: Update package cache
-      dnf:
         update_cache: yes
 
 - name: Install Flatpak apps
