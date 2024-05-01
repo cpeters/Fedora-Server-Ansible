@@ -21,7 +21,7 @@
     name: chriscowleyunix/better_fonts
 
 - name: Install packages
-  dnf:
+  ansible.builtin.dnf:
     name:
       - dnf-plugins-core
       - flatseal
@@ -65,7 +65,7 @@
 # Option-Tab - grouped by application across all workspaces
 #
 - name: Set switch-windows keybinding
-  command: gsettings set org.gnome.desktop.wm.keybindings switch-windows "['<Alt>Tab']"
+  ansible.builtin.command: gsettings set org.gnome.desktop.wm.keybindings switch-windows "['<Alt>Tab']"
 
 - name: Set switch-windows-backward keybinding
-  command: gsettings set org.gnome.desktop.wm.keybindings switch-windows-backward "['<Alt><Shift>Tab']"
+  ansible.builtin.command: gsettings set org.gnome.desktop.wm.keybindings switch-windows-backward "['<Alt><Shift>Tab']"

@@ -2,11 +2,16 @@
 # Install developer packages
 #
 - name: Install packages
-  dnf:
+  ansible.builtin.dnf:
     name:
       - alacritty
       - bash-color-prompt
       - bash-completion
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
       - exa
       - fd-find
       - fzf
@@ -25,14 +30,14 @@
     update_cache: true
 
 - name: Clone dotfiles repository
-  git:
+  ansible.builtin.git:
     repo: "https://github.com/cpeters/dotfiles.git"
     dest: "/home/chris/.dotfiles"
     clone: true
 
 # TODO fix structure of stow repo and update these
 - name: Use stow to manage dotfiles
-  command: stow -t ~/ {{ item }}
+  ansible.builtin.command: stow -t ~/ {{ item }}
   args:
     chdir: "/home/chris/.dotfiles"
   with_items:

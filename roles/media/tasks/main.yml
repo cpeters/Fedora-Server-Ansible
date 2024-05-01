@@ -2,7 +2,7 @@
 # Install media packages and Intel specific libraries
 #
 - name: Install packages
-  dnf:
+  ansible.builtin.dnf:
     name:
       - ffmpeg
       - ffmpeg-libs
@@ -25,7 +25,7 @@
 # TODO: find reference to docs on this
 #
 - name: Swap DNF packages for Intel media driver
-  dnf:
+  ansible.builtin.dnf:
     name: libva-intel-media-driver
     newname: intel-media-driver
     state: present
