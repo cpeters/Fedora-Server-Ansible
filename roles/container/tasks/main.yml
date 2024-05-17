@@ -12,6 +12,11 @@
   ansible.builtin.dnf5:
     name:
       - cockpit-podman
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
       - incus
       - podman
       - podman-compose

@@ -7,11 +7,7 @@
       - alacritty
       - bash-color-prompt
       - bash-completion
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-      - docker-buildx-plugin
-      - docker-compose-plugin
+      - bat
       - exa
       - fd-find
       - fzf
@@ -22,6 +18,7 @@
       - ripgrep
       - stow
       - strace
+      - tailscale
       - tig
       - tmux
       - unzip
@@ -45,3 +42,5 @@
   # - alacritty
     - git
     - tmux
+
+# vim: ts=2 sts=2 sw=2 et ft=yaml.ansible
