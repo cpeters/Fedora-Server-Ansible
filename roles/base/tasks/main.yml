@@ -11,23 +11,23 @@
     state: present
     backup: true
   with_items:
-    - 'fastestmirror=True'
-    - 'max_parallel_downloads=10'
-    - 'deltarpm=True'
+    - fastestmirror=True
+    - max_parallel_downloads=10
+    - deltarpm=True
 
 - name: Add RPM Fusion Free & NonFree Repositories
-  ansible.builtin.command: dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-                                      https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+  ansible.builtin.command: dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \ https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm
+    -E %fedora).noarch.rpm
 
 - name: Update DNF and upgrade packages with refresh
   ansible.builtin.dnf5:
-    name: '*'
+    name: "*"
     state: latest
     update_cache: true
 
 - name: Install Fedora Workstation group
   ansible.builtin.dnf5:
-    name: '@Fedora Workstation'
+    name: "@Fedora Workstation"
     state: present
     update_cache: true
 

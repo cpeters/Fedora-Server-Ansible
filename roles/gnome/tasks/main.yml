@@ -1,6 +1,3 @@
-#
-# Install Gnome packages and tweak default behavior
-#
 ---
 # https://github.com/silenc3r/fedora-better-fonts
 #
@@ -14,6 +11,7 @@
 # Some people find subpixel antialiasing to look better - others can't stand color fringing caused by it.
 # If you want to try it for yourself install fontconfig-enhanced-defaults package.
 # You can also enable it manually in Gnome Tweaks or by running following command in terminal:
+
 - name: Add Copr repository for better fonts
   community.general.copr:
     host: copr.fedorainfracloud.org
@@ -26,7 +24,7 @@
       - dnf-plugins-core
       - flatseal
       - fontconfig-font-replacements
-    # - fontconfig-enhanced-defaults
+      # - fontconfig-enhanced-defaults
       - gnome-extensions-app
       - gnome-tweaks
     state: present
@@ -63,7 +61,7 @@
 #
 # Alt-Tab - individual windows on active workspace
 # Option-Tab - grouped by application across all workspaces
-#
+
 - name: Set switch-windows keybinding
   ansible.builtin.command: gsettings set org.gnome.desktop.wm.keybindings switch-windows "['<Alt>Tab']"
 

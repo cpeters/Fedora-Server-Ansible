@@ -2,6 +2,7 @@
 #
 # Setup environment for containers
 #
+
 - name: Add Copr repository for Incus
   community.general.copr:
     host: copr.fedorainfracloud.org
