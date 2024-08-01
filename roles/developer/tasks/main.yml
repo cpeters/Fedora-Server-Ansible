@@ -1,6 +1,8 @@
+---
 #
 # Install developer packages
 #
+
 - name: Install packages
   ansible.builtin.dnf:
     name:
@@ -28,15 +30,14 @@
 
 - name: Clone dotfiles repository
   ansible.builtin.git:
-    repo: "https://github.com/cpeters/dotfiles.git"
-    dest: "/home/chris/.dotfiles"
+    repo: https://github.com/cpeters/dotfiles.git
+    dest: /home/chris/.dotfiles
     clone: true
 
-# TODO fix structure of stow repo and update these
 - name: Use stow to manage dotfiles
   ansible.builtin.command: stow -t ~/ {{ item }}
   args:
-    chdir: "/home/chris/.dotfiles"
+    chdir: /home/chris/.dotfiles
   with_items:
   # - bash
   # - alacritty

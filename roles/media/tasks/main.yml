@@ -1,6 +1,8 @@
+---
 #
 # Install media packages and Intel specific libraries
 #
+
 - name: Install packages
   ansible.builtin.dnf:
     name:
@@ -23,7 +25,7 @@
 #
 # With newer Intel chipsets we want to swap the libva media driver for the intel media driver
 # TODO: find reference to docs on this
-#
+
 - name: Swap DNF packages for Intel media driver
   ansible.builtin.dnf:
     name: libva-intel-media-driver

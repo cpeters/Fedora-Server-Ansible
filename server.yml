@@ -7,4 +7,4 @@
   gather_facts: false
 
   roles:
-  - system
+    - system
